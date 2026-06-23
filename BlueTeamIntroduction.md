@@ -1,4 +1,7 @@
 # Blue Team Introduction
+_____
+The goal of this first module is to understand the basics of SOC/security analyst roles, as well as the fundamentals of triage, escalations, social engineering, and system attacks.
+____
 
 This course starts out with a few basics, like introducing us to the various roles. 
 
