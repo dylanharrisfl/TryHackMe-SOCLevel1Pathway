@@ -148,4 +148,15 @@ Explainations:
 3. Antivirus Solution - This will improve endpoint protection when users unintentionally run malcious programs on their workstations, like in case 1.
 4. Security Awareness Program - This will improve overall user awareness on how to protect themselves against social engineering attacks like the ones they experienced in cases 1-3.
 
+_____
+# Systems as Attack Vectors
+_____
+
+Next, it's important to discuss that systems can be attack vectors without human interactions. If a relevant system does not have necessary protections in place, an attack can very easily exploit it without victim knowledge/participation.
+
+Below are some examples of system attacks:
+
+- Human-Led attacks - These are attacks that are initiated by a system user in some way. For example, poor system configuration, weak passwords, or plugging in a malicious USB stick found outside the office. This human errors leave systems vulnerable for attacks.
+- Vulnerabilities - Configuration flaws in softwares are beyond common. This leaves them vulnerable to exploits. That is why having strong patch management policies and verification processes are vital to protect against known and patched issues. That being said, zero-day attacks still present a serious threat, so having the necessary measures to cover for the unknown vulnerabilities will allow you to protect against a zero-day attack if it is deployed. For example, deploying proper access controls like RBAC or MAC to ensure resources are only access as needed or based solely on if the role authorizes that user to access it.
+- Supply Chain - Software suppliers can have their tools hijacked to deployed malware within them. When the known-safe program is run, it would then additionally install the attackers payload as well to all customers. For example, if an RMM tool is attacked, users that are installing new RMM agents now have a malcious payload installed on their computer.
 
