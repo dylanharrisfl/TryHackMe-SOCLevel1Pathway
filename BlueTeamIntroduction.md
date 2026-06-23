@@ -1,4 +1,4 @@
-#Blue Team Introduction
+# Blue Team Introduction
 
 This course starts out with a few basics, like introducing us to the various roles. 
 
@@ -37,6 +37,53 @@ Next, I need to deploy a simple firewall rule to block the malicious IP in order
 
 Here, I block the public IP address, as well as right a cohesive note identifying why. Though we may need to be quick, it is always important to add notes to important firewall changes so analysts in the future are aware of the rule's intention.
 
+______________________________________________________
+### SOC Roles in Blue Team
+_______________________________________________________
 
+In this next module, I review the various security roles within an organization.
 
+At the top will be the CISO, who is utilized to manage multiple security teams/efforts in order to maintain and further the overall security posture of our organization.
 
+On the Blue Team there are a wide range of different roles.
+Within the SOC we see:
+ - SOC Manager
+ - SOC Engineer
+ - SOC L1/L2 Analysts
+This team primarily triage//investigate attacks/alerts as the come in. The SOC Engineer fine tunes these rules and the manager leads the effort and communicates with the senior management.
+
+Next, is the Cybersecurity Incident Response Team, or CSIRT for short.
+This team consists of professionals ready to be deployed at any moment to handle cyber breach incidents as they occur.
+This contains roles like:
+ - CSIRT Manager
+ - Forensics Lead
+ - Threat Intel Expert
+ - Threat hunting Expert
+ - Malware Analyst
+
+Finally, there are some specialized roles within the cyber domain like the following:
+ - DevSecOps
+ - Penetration Tester
+ - GRC Auditor
+ - AppSec Engineer
+ - Threat Analyst
+ - AI Researcher
+These roles provide unique and specialized skills to create a diverse team of individuals that can improve and protect different efforts within the organization in various ways.
+
+This room also provides a lab to assign various people to certain scenarios based on there roles:
+
+<img width="1080" height="749" alt="image" src="https://github.com/user-attachments/assets/2fa0d062-4caa-4da6-aa6f-ef9bab6660c7" />
+
+Here is how I chose each role:
+
+- SOC L1 Analyst - This role was chosen to investigate the firewall brute-force attempt alert, as this is preliminary attack triage. This is a low-risk incident, and does not pose any immediate threat. We should utilize Level 1 resources to investigate and remediate as needed.
+- Soc L2 Analyst - I chose this role as there is a high-risk employee who has already launched a malicious program. We need to utilize Level 2 resources due to the high priority and severity of this incident
+- CERT Lead - Infrastructure already being infected and encrypted with ransomware is means for immediate attention and remediation. Deploying a skilled team/individual trained specifically to investigate and handle incidents of this level is necessary.
+- GRC Auditor - Because this involves PCI DSS compliance, it is important to have an individual trained and well-versed in GRC to audit and adjust the systems handling this information.
+- Penetration Tester - To best understand if vulnerabilities are present on a system, it is ideal to deploy a red team individual to probe and test for vulnerabilities to see what can be identified and remediated.
+- SOC Engineer - This individual is responsible for maintaining and improving SOC tools to keep systems healthy and ensure tools are alerting accurately. Because the SIEM tool is unavailable, it is the SOC Engineers priority to bring it back online so analysts can continue taking care of alerts.
+- Threat Researcher - As malicious groups and threats emerge, develop, and adapt, it is ideal to have a threat researcher that can investigate the scope of these threats so the organization can premptively protect against it.
+
+________________________________________________________
+### Humans as Attack Vectors
+_________________________________________________________
