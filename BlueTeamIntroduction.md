@@ -87,3 +87,62 @@ Here is how I chose each role:
 ________________________________________________________
 ### Humans as Attack Vectors
 _________________________________________________________
+
+The next module here highlights the vulnerability of humans. People are the perfect attack vector as they tend to already have access to the resources you need. That being said, why try to pull of an impossible breach, when you can just run a social engineering campaign and harvest the credentials of someone with prexisting permissions to sensitive resources?
+
+Below are some examples of social engineering attacks on people:
+
+ - Phishing attacks - These are attacks centered around delivering communication over commonly used mediums (like email or SMS) to gain a sense of trust, and incite an emotional response from the target (fear, urgency, etc.). By getting the victim to engage in the attack, threat actors can deliver payloads, harvest credentials, redirect to malicious websites, etc.
+ - Malware Downloads - Using things like adware, malicious QR codes, website redirection, etc., attackers can trick victims into clicking on, downloading, and running malcious packages on their workstations. These typically pose as legitimate downloads or links to convice users to engage with them.
+ - Deepfakes - With the rise of AI, we are starting to see a lot of attackers utilizing tools like voice deepfakes and video deepfakes to trick employees or individuals into engaging in an attack. Typically, these deepfakes are impersonating a trusted superior or coworker to gain a sense of trust.
+
+So what can be done to defend against these attacks?
+
+ - Anti-phishing solution - While TryHackMe defines this as a solution to quarantine phishing emails, I believe a more ideal toolset would be an email threat protection suite. This tool should be able to not only remove phishing emails, but also quarantine/block and spoofed email, malicious links/images/attachments, or emails domains impersonating an organization with a legitimate email domain (for example tryhackne.com inestead of tryhackme.com).
+ - Antivirus/EDR - This tool can prevent against malicious packages that does get delivered to the endpoint. It acts as a secondary line of defense to protect against anything that makes it past the user awareness stage.
+ - Principles/Security Awareness Training - Running fake phishing campaigns, training, and deploying security pricniples are great ways to make your staff more aware of how to protect themselves against these attacks. Something I like to do personally to enforce this is to have users complete SAT training sessions, and those who continue to not participate will be locked out of connecting to a (non-vital to workflow) resource until they complete training. This will cause enough of a nuissance to those who struggle to participate to encourage them to complete training on time.
+
+Next, we have a lab. I am greeted with a security dashboard and some tasks to complete:
+
+<img width="1204" height="325" alt="image" src="https://github.com/user-attachments/assets/0c1b14e3-3b00-479f-a9cc-918b2c67ca5d" />
+
+Here is my first Employees at risk case to investigate and respond to:
+
+<img width="685" height="527" alt="image" src="https://github.com/user-attachments/assets/977594ae-7f68-4874-ba26-1e260f9984c1" />
+
+I get these messages/questions/EDR alerts every now and then from clients. Seeing that this package is not received from the original vendor, and is not passing EDR checks, it is vital to avoid this application. There are many issues that could be at play here. For example, there may be a supply chain attack where attackers took advantage of the freeware sight and deployed C2 installers within the repositories of the software installers they have posted. In this case, we will quarantine this installer and source the original installation package for 7zip.
+
+Next case, a SIEM alert:
+
+<img width="665" height="404" alt="image" src="https://github.com/user-attachments/assets/ac0d98aa-fb3c-424a-af36-be16ea14b121" />
+
+This is a clear cut phishing attempt. There is a noticable sum of money involved, causing urgency for the reciever. This also contains a .rar package for what would typically be a .pdf for an invoice. Finally, we see the email originates from a stripe-payments.xyz domain, but the email body says to email support@stripe.com. It is worth noting that the discrepency is moderately alarming, but not always fully indicative of phishing. In this case we will block the email and begin further analysis.
+
+Next case, a support request from a client/coworker:
+
+<img width="674" height="405" alt="image" src="https://github.com/user-attachments/assets/d00c41ff-9179-4a0a-a5f7-8aa1fb66c6c7" />
+
+This is an example of a deepfake attack. Someone simulated a position of power, during non business hours (can sometimes be interpreted as priority/urgent), from an unknown number to harvest credentials. We will disable the Gmail account immediately and investigate further
+
+Next case is a SIEM alert:
+
+<img width="665" height="462" alt="image" src="https://github.com/user-attachments/assets/83971f94-4c1b-4ce8-a3d0-ed0f2bf9a97c" />
+
+This is a suspicious login location alert. While Rose may very well be operating from a different remote location, it is not expected and should be addressed carefully. We must disable the account and verify with Rose whether this is intentional.
+
+For the next challenge, I need to now deploy security policies to improve our current standings based on what we have experienced from the recent issues:
+
+<img width="925" height="628" alt="image" src="https://github.com/user-attachments/assets/98fba046-cf2c-4c4d-812d-50e63953660d" />
+
+Here are my choices:
+
+<img width="907" height="678" alt="image" src="https://github.com/user-attachments/assets/74d69ea6-dd2b-4dbf-8060-ce249c5a4b2c" />
+
+Explainations:
+
+1. Anti-Phishing Solution - This will help defend against some of the phishing attacks like the one received in the second case.
+2. Access Management Policy - This will clearly identify a safe and standard policy on how to go about password resets to better defend against deepfake/social engineer attacks like the one in the third case.
+3. Antivirus Solution - This will improve endpoint protection when users unintentionally run malcious programs on their workstations, like in case 1.
+4. Security Awareness Program - This will improve overall user awareness on how to protect themselves against social engineering attacks like the ones they experienced in cases 1-3.
+
+
