@@ -160,3 +160,17 @@ Below are some examples of system attacks:
 - Vulnerabilities - Configuration flaws in softwares are beyond common. This leaves them vulnerable to exploits. That is why having strong patch management policies and verification processes are vital to protect against known and patched issues. That being said, zero-day attacks still present a serious threat, so having the necessary measures to cover for the unknown vulnerabilities will allow you to protect against a zero-day attack if it is deployed. For example, deploying proper access controls like RBAC or MAC to ensure resources are only access as needed or based solely on if the role authorizes that user to access it.
 - Supply Chain - Software suppliers can have their tools hijacked to deployed malware within them. When the known-safe program is run, it would then additionally install the attackers payload as well to all customers. For example, if an RMM tool is attacked, users that are installing new RMM agents now have a malcious payload installed on their computer.
 
+Below are some more policies I selected to best improve security posture:
+
+<img width="822" height="718" alt="image" src="https://github.com/user-attachments/assets/333da250-c0eb-4099-95d1-40708b7db676" />
+
+Explainations:
+
+1. Patch Management Policy - A good patch/vulnerability management process/tool allows a security team to remediate vulnerabilites as patches come out for them, as well as improving security insights within the network.
+2. Secure Password Policy - Enforcing complex and rotation password removes the vulnerability of weak and stale passwords as a whole. A chain is only as strong as it's weakest link, so a weak password could very easily take down an well-secured network. This will encourage users to utilize strong passwords to protect their accounts.
+3. Antivirus Protection - Having endpoint security adds another layer of protection onto a workstation. If a threat gets past the human eye and is able to execute something malicious, antivirus can act as another line of defense to catch and quarantine the threat before it causes damage.
+4. Security Training for IT - Requiring users to go through regular security training, especially for IT professionals (who are commonly working with critical systems) improves on the chance of misconfiguration. For exmaple, we can make junior technicians aware of the vulnerability that default passwords on network devices create.
+
+_________
+
+
