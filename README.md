@@ -8,4 +8,5 @@ Pathway from [TryHackMe](https://tryhackme.com/paths)
 Linked here are the modules within the pathway, listed in order:
  1. [Blue Team Introduction](https://github.com/dylanharrisfl/TryHackMe-SOCLevel1Pathway/blob/0636fc23fd4bec086c18a46ca93866bef82a1861/BlueTeamIntroduction.md)
  2. [SOC Team Internals](https://github.com/dylanharrisfl/TryHackMe-SOCLevel1Pathway/blob/cf6fe723fe1ae46a7484ab824f3a86246f7bdd3b/SOCTeamInternals.md)
+ 3. [Introduction To EDR](https://github.com/dylanharrisfl/TryHackMe-SOCLevel1Pathway/blob/a51a15354981c270bdc08ce94e5b6397d2a4f322/IntroductionToEDR.md)
 
