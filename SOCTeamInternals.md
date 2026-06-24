@@ -140,3 +140,121 @@ ____
 
 ____
 
+Working in a SOC, primarily an MSSP with many different clients, it is difficult to know the relevancy of users based on just their name. That is why it's important to have well configured user accounts in various identity provides such as:
+ - Active Directory
+ - SSO Providers Like Okto or Google Workspace
+ - HR systems
+ - Custom CSVs
+
+With large environments, it's also very helpful to have strong documentation of various assets using various tools. Without effective documentation or intuitive naming schemes, analysts will need to waste time figuring out what the device/server is before they can truly understand the threat in its entirety. Some tools to keep in mind for this:
+ - Active directory (On prem, Entra ID, or hybrid synced)
+ - SIEM/EDR solutions - These typically keep track of some asset information
+ - MDM solution like MS intune
+ - Custom Documentation - It is important to have accessible documentation that describes certain assets if they are not clear (for example, a Domain Controller will always be doing Active Directory services, but sometimes may host files or applications as well. If so, it is important to document this)
+
+Another vital part of effective documentation is a network diagram. A comprehensive diagram built in a tool like Visio allows security and IT professionals to reference it to understand the logical layout of a network quickly. This should include IP addresses, open ports, servers, switches, where applcations hosted, subnets, routes, etc. 
+This document should be very well secured, as depending on the depth of the document it can provide extensive information for an attacker to pivot/cause further damage with if they gain control of it.
+
+<img width="960" height="386" alt="image" src="https://github.com/user-attachments/assets/44273764-2003-45d9-9c87-a5379d13e4cc" />
+
+In this example we can see the various ports exposed to the internet from the firewall, as well as the internal networks within. 
+It provides the CIDR notation network address of the database, VPN, and office network. If the attacker here has compromised a system on 172.16.15.99, we know that this system is living on the database network, so triage should start there.
+_____
+
+### Workbooks
+
+Here is an example of a workbook for Unusual Login Location
+
+<img width="1202" height="654" alt="image" src="https://github.com/user-attachments/assets/03ba2d88-ba9f-4e5c-b242-6fc3e25e0295" />
+
+This describes the various paths to follow when investigating an unusual login location. Here's how I'd explain the stages:
+ - Enrichment Stage - Use threat intelligence and alert info to gain information regarding the user and the incident
+ - Investigation - Use SIEM logs and other information gather to make a verdict based on your findings
+ - Escalation - Escalate if needed
+
+The module provides a lab where I can create a model workbook:
+
+<img width="1186" height="809" alt="image" src="https://github.com/user-attachments/assets/ef9142fd-d6ad-450c-839a-f907db0d42a4" />
+
+Here is my final product:
+
+<img width="1147" height="799" alt="image" src="https://github.com/user-attachments/assets/abe31046-97d2-49c2-9c5d-66e6e8d522cc" />
+
+All of this follows the basic triage for suspicious email investigations
+ 1. First, we need to assign the ticket and being our investigation appropriately
+ 2. Next, analyze the email header information to gain more information about the SPF/DKIM tests results, the sender reputation, content, origin server, etc.
+ 3. Continue to manually sandboxing the attached content using tools like sysinternals to investigate how it affects the system and determine any clear IoA's
+ 4. Make your determination - Document accordingly
+ 5. Close as a false positive, or gather information for effective escalation and alert reporting then escalate.
+
+____
+
+### SOC Metrics and Objectives
+
+_____
+
+ - Discover concepts of SLA, MTTD, MTTA, MTTR.
+ - Understand the importance of the False Positive Rate
+ - Learn how to improve metrics as a L1 analyst
+
+______
+
+First, lets dive into some metrics and the formulas used to calculate them:
+
+1. Alerts Count (AC) = Total Count of Alerts
+2. False Positive Rate (FPR) = False Positives / Total Alerts
+3. Alert Escalation rate (AER) = Escalated Alerts / Total Alerts
+4. Threat Detection Rate (TDR) = Detected Threats / Total Threats
+
+TryHackMe states that 5 to 30 alerts per day per L1 analyst is a good metric. It's important to not have too little, nor too many alerts to handle. In both of those extremes, there are real alerts being missed due to SIEM alerting misconfigurations/poor threat detection or sifting through too many false positives to handle the true positive threats.
+
+A False Positive Rate of 80% or higher is cause for concern. This leads analysts to assuming most alerts are going to be false positives, and making this mistake on a true positive.
+
+Alert Escalation Rate - 
+An indicator of a strong L1 team is ones who's escalation rate is low. This indicates they are more independent, and able to handle most alerts without needing to escalate as much. A decent number to shoot for is below 50%, but the goal would be below 20%.
+
+Threat Detection Rate - 
+Threat detection rate should always be 100%. The simplest alert missed could result in devestating affects if it goes unrecognized and unchecked. It is vital for analyst to be thorough, and logging tools to be accurate and available at all times.
+
+Next we have some metrics typically agreed upon between a SOC and the company management/client through their SLA (service level agreement)
+ - SOC availability - Typically 24/7 or 8-5 M-F
+ - MTTD - Mean time to detect - Typically 5 minutes - Mean time for the SOC tools to detect the threat
+ - MTTA - Mean Time to Acknowledge - Typically 10 minutes - Mean time for the SOC to acknoledge the alert
+ - MTTR - Mean Time to Respond - Typically 60 minutes - Mean time for the SOC to stop the spread of the attack
+
+It is important to uphold the standards of these metrics for internal performance, as well as meeting the standards agreed upon/sold within the SLA.
+
+## Improving Metrics
+
+It's important to keep up with the metrics you and your team deliver, so you can focus and weak points and improve accordingly.
+
+Here are some common metric issues, and some recommendations to solve them:
+
+1. FPR over 80% - Exclude noise! Stop alerting on system updates and tune your tools to what really matters. Consider using SOAR/scripting to handle common alerts if appropriate
+2. MTTD over 30 minutes - Get with the SOC engineer and consider resource usage and SIEM configuration to ensure log collection and injestion is happening efficiently at peak hours
+3. MTTA over 30 minutes - Ensure analysts are aware every time a new alert comes in, and ensure staffing is sufficient to handle the current workload
+4. MTTR over 4 hours - Ensure strong documentation, and ensure L2 analysts have the appropriately amount of time to dedicate to handling advanced threats efficiently and in a timely manner.
+
+SOC Manager Labs:
+
+The module presents a few various scenarios where I need to think like a SOC manager to improve my teams performance based on the metric affected:
+
+Case 1:
+
+<img width="1174" height="574" alt="image" src="https://github.com/user-attachments/assets/37ad02b9-6c0c-4341-8d00-b2bff6cc7631" />
+
+Clearly, my team took too long to respond to this threat. Had the appropriate documentation been in place as a workbook, my L1 team could have handled this alert instead of escalating it to a L2 who was already busy that day.
+
+Case 2:
+
+<img width="1181" height="549" alt="image" src="https://github.com/user-attachments/assets/3630627b-68e1-4851-9cd9-a5daba3062c8" />
+
+Here we have a 20 minute delay with MTTD. Our SIEM tools are not detecting alerts or injesting logs fast enough. In this circumstance, I need to assign my SOC engineer to tweaking our tools to imrpove detection time.
+
+Case 3:
+
+<img width="1177" height="582" alt="image" src="https://github.com/user-attachments/assets/23a305f0-5fe4-49c9-ae1b-02881b18ae4e" />
+
+In this case we have a 95% FPR, meaning L1 analysts are spending way too much time investigating unecessary alerts. In this case, we want to investigate what can be excluded from alerting safely, and assign the SOC engineer to configure our tools to deploy said exclusion/adjustments.
+
+______
