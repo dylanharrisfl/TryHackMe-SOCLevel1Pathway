@@ -1,8 +1,13 @@
 ____
-### SOC Team Internals
+# SOC Team Internals
 ___
 Explore relevant SOC concepts like triage and escalation of high-risk alerts, as well as key metrics tracked in SOC environments.
 ___
+## Key Takeaways
+ - Learned more about successful triage and escalation practices
+ - Learned about work/playbooks and how to create/utilize them effectively
+ - Explored key performance indicator metrics, how they are calaculated, evaluated, and used to improve SOC team performance accordingly.
+____
 
 ### Events and Alerts
 
