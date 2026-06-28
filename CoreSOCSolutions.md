@@ -3,6 +3,9 @@ _____
 _____
 ## Key Takeaways:
  - Understanding EDR fundamentals and dashboard/alert navigation
+ - Understanding the importance/operation of SIEMs and how it is utilize to solve many problems in security visualization.
+ - Working with and learning the Splunk dashboard, and how to use it to query log data
+ - Working with and learning the ELK stack to understand how to use it to query log data.
 
 Lab still in progress...
 ____
@@ -317,4 +320,144 @@ _______
 
 ______
 
+Elastic Stack (ELK) is a collection of various open-source tools that work together to collect, analyze, and visualize logs. This is also the core foundation behind the Security Onion operating system.
 
+ELK is made up of 4 components:
+
+1. Elastic Search - A search and analytics engine to store and analyze data.
+2. Logstash - A data processing enginer that pulls data from different local log sources, filters, then normalizes it to send to it's destination.
+3. Beats - A host-based agent that ships data to Elasticsearch from the endpoint
+4. Kibana - A web-based log visualization tool that works alongside Elasticsearch to create dashboards and view data with intent.
+
+They work together in a general flow, as such:
+
+Beats (Collects data) > Logstash (Data input) > Elasticsearch (Index and store data) <> Kibana (Analyze and visualize data)
+
+### ELK Lab
+
+In the discover page, where most analysts work out of, there are various tabs to utilize:
+
+- Logs - Shows a single log containing event information with fields and values within that log
+- Fields Pane - Shows the list of fields parsed from the log. Can be used to filter with
+- Index Pattern - Each type of log is stored in a different index pattern. We can filter the logs via the selected index pattern
+- Search bar - where the user can query logs based on what they are looking for
+- Time Filter - Filter based on date/time
+- Time Interval - Chart that shows the event counts over time
+- TOP Bar - Contains options to save/open saved searches
+- Discover Tab - The main workspace for Kibana to analys daata
+- Add Filter - Apply filters to narrow results easily
+
+My lab provides me with a running instance of ELK at 10.64.168.136.
+I connect to the server and go to the discover tab. I was initially not seeing any logs, but I realized by default I was only searching for the last 15 minutes. I changed that to go a few years back and could now see all of my logs:
+
+<img width="1218" height="850" alt="image" src="https://github.com/user-attachments/assets/9d1dbb00-5fe2-4c93-a5ca-4a4a0266e183" />
+
+Now I've got some questions to answer:
+
+1. Select the index vpn_connections and filter from 31st December 2021 to 2nd Feb 2022. How many hits are returned?
+
+Simply adjusting my time range from what I did above to this date range provided the same answer, 2861.
+
+2. Which IP address has the maximum number of connections?
+
+By simply opening the Source_ip field on the left side I could see that the IP address with the most connections was 238.163.231.224
+
+<img width="1217" height="758" alt="image" src="https://github.com/user-attachments/assets/2057cf96-4c3d-4636-bdad-e3f865e711ca" />
+
+3. Which user is responsible for the overall maximum traffic?
+
+At 4.0% of traffic, I can see that James is the user with the most traffic when looking at the UserName field info.
+
+<img width="1207" height="754" alt="image" src="https://github.com/user-attachments/assets/3808f56d-3b1d-45d5-8c05-3c6d885b78fb" />
+
+4. Apply Filter on UserName Emanda; which SourceIP has max hits?
+
+To find this, I first needed to sort results by logs only where Emanda is in the UserName field. I did this by clicking the + sign next to the field data. 
+
+<img width="1224" height="741" alt="image" src="https://github.com/user-attachments/assets/13afce8c-1015-4b66-8c1c-3ad69c8b780d" />
+
+I could then check the Source_ip field to see what IP had the most hits, being 107.14.1.247
+
+5. On 11th Jan, which IP caused the spike observed in the time chart?
+
+By clicking "Visualize" on the time stamp field, I could select the spike Jan 11. data. From here, I could check the source IP field to see which IP had the most data.
+
+<img width="1221" height="790" alt="image" src="https://github.com/user-attachments/assets/c6bb949e-1ad2-4b86-a91c-b776ef11b3cf" />
+
+In this case, it was 172.201.60.191
+
+6. How many connections were observed from IP 238.163.231.224, excluding the New York state?
+
+For this, I could simply filter for only 238.163.231.224 as the Source_ip, and use the - button the exclude anything from New York under the source_state field.
+
+<img width="1224" height="755" alt="image" src="https://github.com/user-attachments/assets/04760cd8-7bec-4769-b945-8e666c218dad" />
+
+My answer was 48 connections, as seen by the 48 hits at the top once filtered.
+
+
+### Kibana Query Language (KQL)
+
+Kibana Query Language is a searching tool used to search for data within your log files.
+
+It is important to note that a search for "United States" will return results for "United States", but "United" will not. This is because KQL expects the entire term. To combat this, you can use the wildcard symbol \* to accomplish this. For example, United* will return results for "United States"
+
+Logical Operators - You can use the AND, NOT, and OR operators to search for specifics. For example Source_ip : 1.2.3.4 NOT UserName : Dylan
+This will filter for anything from the source IP address 1.2.3.4 but will exclude log from the username Dylan. This can be done similarly for the AND and OR operators.
+
+Field Based Search - As seen above, you can search for fields, not just key terms. You can use something like:
+source_country : United States
+to filter for anything originating from the United States.
+
+For my lab question, I was asked:
+
+Create a search query to filter the logs where Source_Country is the United States and show logs from User James or Albert. How many records were returned?
+
+All I needed to do was create this string to include the following information, and it returned 161 results.
+Source_Country : "United States" AND UserName : "James" OR UserName : "Albert" 
+
+<img width="1222" height="750" alt="image" src="https://github.com/user-attachments/assets/4d0d7e15-9ec0-4008-b1f0-90e8997ed339" />
+
+Next question:
+
+A user Johny Brown was terminated on the 1st of January, 2022. Create a search query to determine how many times a VPN connection was observed after his termination
+
+It took a few tries and some research before correctly entering the syntax KQL expects for the date, but eventually got it, and used the AND operator to specify the user:
+@timestamp > 2022-01-01 AND UserName : "Johny Brown" 
+
+<img width="1219" height="759" alt="image" src="https://github.com/user-attachments/assets/0a788828-16f8-44ad-b103-ec48bb8f2a28" />
+
+My result here was 1.
+
+## Visualization
+
+Next I can make a new visualization to answer a few questions. Visualization is used to create graphs and charts to provide insights and better understanding of various logs/field data.
+
+<img width="1219" height="760" alt="image" src="https://github.com/user-attachments/assets/87d25f46-7096-4f31-99f0-5b7c6cbfb0c5" />
+
+After adding the Action : failed filter to my filter, I created a dsahboard out of it.
+
+<img width="1223" height="752" alt="image" src="https://github.com/user-attachments/assets/0a41fdf1-ce41-49e1-8ac3-36c4bd7f6da6" />
+
+I can now use this to answer my questions:
+
+1. Which user was observed with the greatest number of failed attempts?
+
+I could do the same thing I did above, and additionally filter by the Username field:
+
+<img width="1224" height="755" alt="image" src="https://github.com/user-attachments/assets/fa1932a3-58e1-467e-9d00-25601c014101" />
+
+My answer here was Simon.
+
+2. How many wrong VPN connection attempts were observed in January?
+
+Now, I just needed to change the time stamp on my filter for only days within January:
+
+<img width="1217" height="747" alt="image" src="https://github.com/user-attachments/assets/2581f9b9-2e2c-43e3-931a-eb7cde6cbb3d" />
+
+When hovering over the graph, I could see my answer was 274.
+
+_____
+
+## Introduction to SOAR
+
+____
