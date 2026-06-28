@@ -1,7 +1,8 @@
 _____
-#  Introduction to EDR
+#  Core SOC Solutions
 _____
 ## Key Takeaways:
+ - Understanding EDR fundamentals and dashboard/alert navigation
 Lab still in progress...
 ____
 
@@ -87,3 +88,43 @@ To answer, I take a look at the alert for DESKTOP-HR01 and check the process inf
 <img width="1178" height="865" alt="image" src="https://github.com/user-attachments/assets/f6658fb4-6dfa-4e5d-8cae-ab0e1c3a13bd" />
 
 Here I can clearly see that CMD.exe is the parent process, which launched cURL.exe, a command line tool for communicating and receiving data from a server. From here, our EDR identifies this behavior as downloading the payload. So my answer here is cURL.exe.
+
+The next question is:
+
+2. What is the absolute path to the downloaded malware on the DESKTOP-HR01 machine?
+
+We can look at the above picture here and see the absolute path used in the curl command to download the malware was C:\Users\Public\install.exe
+
+The next question pertains to WIN-ENG-LAPTOP03, so I traverse to that alert to answer the following:
+
+3. What is the absolute path to the suspicious syncsvc.exe on the WIN-ENG-LAPTOP03 machine?
+
+I poke around on the alert to find the IOC information, and find the file path that launched the process:
+
+<img width="1191" height="644" alt="image" src="https://github.com/user-attachments/assets/529c1cee-9160-4a9e-89bf-67346491dcd8" />
+
+Under file path, I can see the answer is C:\Users\haris.khan\AppData\Local\Temp\syncsvc.exe
+
+The next questions wants me to identify where the exfiltration attempt was made to.
+
+4. On which URL was the exfiltration attempt being made on WIN-ENG-LAPTOP03?
+
+I traversed to the proceess info below, and selected the syncsvc.exe process to actually see what it was doing:
+
+<img width="1168" height="870" alt="image" src="https://github.com/user-attachments/assets/155333a5-d5f1-4279-85f3-3091820cb456" />
+
+As you can see, the process has an alert for attempted exfiltration to https://files-wetransfer.com/upload/session/ab12cd34ef56/dump_2025.dmp
+
+The final question regards the alert for DESKTOP-DEV01.
+
+5. What was UpdateAgent.exe labelled by Threat Intel on DESKTOP-DEV01?
+
+I searched the alert fields to find the threat intel infromation on the selected process:
+
+<img width="1195" height="819" alt="image" src="https://github.com/user-attachments/assets/af6475fb-f8c9-4e53-8d41-e8a45a62d76a" />
+
+
+This tells me here that it is a known internal IT utility tool, indicating it is likely a false positive. This should be confirmed before proceeding.
+
+______
+
