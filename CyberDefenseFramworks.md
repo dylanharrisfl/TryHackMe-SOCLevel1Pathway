@@ -35,8 +35,47 @@ This level is where power begins to fall into the defense team's hands. Finding 
 
 #### 5. Challenging - Tools
 
-If a defense team can catch and eliminate the main tool from the attackers arsenal, it puts the threat actor in a very challenging position. They must now (if they want to continue the attack) either rebuilt or source another tool of the same or likely better caliber to proceed with the attack. This can be accomplished through things like EDR signature detection, YARA rules, etc., that can catch the behavior of malicious executables and block it accordingly.
+If a defense team can catch and eliminate the main tool from the attackers arsenal, it puts the threat actor in a very challenging position. They must now (if they want to continue the attack) either rebuilt or source another tool of the same or likely better caliber to proceed with the attack. This can be accomplished through things like EDR signature detection, YARA rules, etc., that can catch the behavior of malicious executables and block it accordingly. Another way to detect tools is Fuzzy Hashing; an approach that compares hashes to find similarities and relate them. An example of a tool for Fuzzy Hashing is [SSDeep](https://ssdeep-project.github.io/ssdeep/index.html)
+
+#### 6. Tough - TTPs
+
+TTPs are the the top of the pyramid, making them the most difficult protection for attackers to navigate around. TTPs stands for Tactics, Techniques, and Procedures. They refer to the steps and processes deployed to acheive a goal. You can use things like the MITRE ATT&CK framework to identify and categorize these. If a defense team is able to detect a specific attack being carried out, completely eliminating the posibility for this attack by following things like the MITRE ATT&CK framework, or controls identified in SP 800-53 makes it incredibly difficult for an attacker to persist with their attack.
+
+#### Pyramid of Pain Lab
+
+The final touch here is attributing some of these descriptions to the various PoP tiers:
+
+<img width="1151" height="874" alt="image" src="https://github.com/user-attachments/assets/97329d10-d807-4787-88b9-0be2ff32e7e9" />
+
+These are pretty self explainatory. 
+ - The attacker is going to utilize tools to accomplish their objective; tools are the mediums, programs, vendors, etc. utilized to carry out the attack. 
+ - The TTP is the actual plan or object, making this the most valuable piece to identify and thwart.
+ - Hash values are simply file signatures that can be used against threat intelligence databases like virus total to identify them as malicious payloads
+ - An attacker will buy a domain in order to carry out typo-squatting, so they can catch someone going to gmial.com instead of gmail.com
+ - IP addresses are the public facing foundation use by attackers to carry out their attack over the internet. This is where their infrastructure lives.
+ - C2 traffic can be identified in network traffic using tools like Wireshark to detect suspicious outbound traffic/communications.
+________________________________
+
+## The Lockheed Martin Cyber Kill Chain
+
+The Cyber Kill Chain is a cybersecurity framework aimed to identify the structure of an attack. It helps organizations assess their own infrastrucutre to identify and missing security controls, as well as allow defense teams to better understand an intruder's attacking objectives.
+
+The pillars consist of:
+ - Reconnaissance
+ - Weaponization
+ - Delivery
+ - Exploitation
+ - Installation
+ - Command and Control
+ - Actions on Objectives
 
 
+#### Reconnaissance
+#### Weaponization
+#### Delivery
+#### Exploitation
+#### Installation
+#### Command and Control
+#### Actions on Objectives
 
-
+## Lab in progress...
