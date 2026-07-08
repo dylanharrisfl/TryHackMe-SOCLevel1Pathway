@@ -6,7 +6,7 @@ ____________________________
 
 ## Key Takeaways:
 
- - Understanding key concepts of the Pyramid of Pain and how it can be used the slow and thwart attacks
+ - Understanding key concepts of the Pyramid of Pain and how it can be used to slow and thwart attacks
 
 Lab still in progress...
 _____________________________
