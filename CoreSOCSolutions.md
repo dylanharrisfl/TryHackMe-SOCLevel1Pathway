@@ -6,8 +6,7 @@ _____
  - Understanding the importance/operation of SIEMs and how it is utilize to solve many problems in security visualization.
  - Working with and learning the Splunk dashboard, and how to use it to query log data
  - Working with and learning the ELK stack to understand how to use it to query log data.
-
-Lab still in progress...
+ - Understanding SOAR operations, and some of the issues they address within a SOC
 ____
 
 ### Introduction to EDR?
@@ -461,3 +460,53 @@ _____
 ## Introduction to SOAR
 
 ____
+
+### What is SOAR?
+
+SOAR Stands for Security Orchestration, Automation, and Response. It's meant to automate and streamline security management through various workflows and tools, to aleviate some of the common issues SOCs face like:
+ - Alert Fatigue
+ - Disconnected tools (endpoint agent services shutting off, or log connectors getting broken)
+ - Manual Processes eating up time
+ - Skills shortage
+
+The main uses for SOAR are as follows:
+
+1. Orchestration - There are many tools, platforms, and vendors utilized day to day by a SOC analyst when investigating alerts. Navigating all of these at once can be cumbersome. The point of orchestration is to use the SOAR platform to incorporate all of these tools together into one toolbox to take action based on playbooks, or assist analysts in triage and remediation.
+
+2. Automation - This is using the SOAR platform to create automations based on certain alert triggers. If a certain incident/circumstance occurs, the SOAR platform will initiate and script that takes relevant action as a result.
+
+3. Response - Using playbooks and automation, the SOAR platform can take necessary actions to resolve an incident, or at least mitigate it, when it first comes in. That being said, SOAR is not a one-size-fits-all approach, and is more used as a tool for SOC analysts to better understand and address various tasks/alerts to imrpove their workflow and efficiency.
+
+Below are some pictures of provided playbooks to analyze:
+
+<img width="913" height="798" alt="image" src="https://github.com/user-attachments/assets/855919d4-64af-4577-a64e-a0f07585b661" />
+
+<img width="1858" height="610" alt="image" src="https://github.com/user-attachments/assets/3e1fa2fa-d1c3-4b6c-96da-80c40af3df6f" />
+
+As we can see in both, there is manual input for a SOC analyst, as crucial decision making and verification is still required by human touch. That being said, most of the work is done by the SOAR tool. In both options, there is a clear playbook configured that gives yes or no options based on the circumstnace, and takes action down that path accordingly. This process cuts down a lot of the fat that would originally take up the analysts time, like checking attachment hashes againts threat intelligence, or applying patches through a PM platform.
+
+Though it is not mentioned here, I do want to point out that it is important for Junior through Senior analysts to have a good understanding of these playbooks and what they are doing. Solely relying on the SOAR tool creates a point of failure in an organization. Analysts musts thoroughly understand the process start to finish, so they can understand the context and information provided by the SOAR once it runs through its processes.
+
+_____
+
+<img width="722" height="462" alt="image" src="https://github.com/user-attachments/assets/c7068fff-b1ed-441f-b7d7-7dcf73a05d2f" />
+
+______
+
+<img width="706" height="364" alt="image" src="https://github.com/user-attachments/assets/b2d265d4-710c-495f-85f2-e0599221e2ec" />
+
+______
+
+<img width="701" height="362" alt="image" src="https://github.com/user-attachments/assets/ca7e818d-d4f2-4012-9bb3-2648df7b7812" />
+
+______
+
+<img width="702" height="366" alt="image" src="https://github.com/user-attachments/assets/10e8304a-5fd0-42b4-b391-2a97092b3730" />
+
+______
+
+<img width="706" height="467" alt="image" src="https://github.com/user-attachments/assets/e53abc96-7fe7-4ab1-b4e2-b562a024bae8" />
+
+______
+
+Reasoning - A lot of these were pretty straight forward. It makes sense to automate tings like threat intelligence, ticket creation and communication, blocking malicious IPs/domains, etc. as they do not require immediate human decision. It is the analyst validation, testing, and confirmation that cannot be automated. It is important that a human eye looks this over to ensure results and actions make sense for the client (or head) organization, the SOC, compliance, future security posture, long term resoltuion of the event, and more.
