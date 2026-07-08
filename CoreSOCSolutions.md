@@ -9,7 +9,7 @@ _____
  - Understanding SOAR operations, and some of the issues they address within a SOC
 ____
 
-### Introduction to EDR?
+### Introduction to EDR
 
 EDR (endpoint detection and response) is a security solution for deep endpoint protection. It is a tool that constantly reviews and monitors system processes and detect/address/alert threats as they occur.
 
