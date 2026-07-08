@@ -9,3 +9,4 @@ Linked here are the modules within the pathway, listed in order:
 1. [Blue Team Introduction](BlueTeamIntroduction.md)
  2. [SOC Team Internals](SOCTeamInternals.md)
  3. [Core SOC Solutions](CoreSOCSolutions.md)
+ 4. [Cyber Defence Frameworks](CyberDefenceFramworks.md)
