@@ -71,11 +71,31 @@ The pillars consist of:
 
 
 #### Reconnaissance
+
+Recon is the first stage of the Kill Chain, and involves the research and planning phases of an attack. This typically involves learning business practices, employee data, software tools used, public infrastructure, etc. OSINT, or Open-Source Intelligence is the process of gathering publicly available information like social media accounts, public DNS record data like WHOIS or MX lookups, search engine information, etc. This would be classified as Passive Recon, as there is no actual interaction with the target. Active recon would be things like social engineering, port scanning, probing public infrastructure ports, etc. This is because you are actively interacting with the target. 
+Recon could look something like email harvesting:
+Using tools like theHarvester and Hunter.io to gather email addresses, subdomains, IPs, URLs, contact information, etc. to build a phishing campaign attack surface.
+
 #### Weaponization
+
+This is the process of utilizing your information gathering to build and weaponize a tailored tool for your attack. For example, creating an infected Word document containing a VBA script tailored to look like a invoice for a financial employee, a contract for management to sign, and so on. They could then build out their C2 infrastructure to link to that Word document to prepare for delivery.
+
 #### Delivery
+
+Delivery is the process of actually getting the paylod onto the intended infrastructure. This could be through means like phishing emails to click on, USBs dropped near an office, compromised websites used by the organization, etc. Through these mediums, the attacker can deliver their malicious payload.
+
 #### Exploitation
+
+This is the process of the payload taking advantage of a vulnerability or a weakness in a system upon the payload execution. This could be something like Zero-day exploits, known CVE's, or simply malicious code.
+
 #### Installation
+
+This is the process of creating a backdoor, and establishing persistence. This is with the intention of the attacker creating a pathway back into the system to continue to carry out their attack. This can be acheived through things like a web shell, meterpreter in the Metasploit framework, creating or modifying known good windows services, adding the malicious connection to startup on machine boot, and more.
+
 #### Command and Control
+
+
+
 #### Actions on Objectives
 
 ## Lab in progress...
