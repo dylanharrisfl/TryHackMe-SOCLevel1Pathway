@@ -94,7 +94,7 @@ This is the process of creating a backdoor, and establishing persistence. This i
 
 #### Command and Control
 
-
+Command and control definse the channel malware creates for an attacker to remotely operate victim machinery. The intention is to avoid detection as the attacker delivers malicious remote commands/scripts to the machine to pivot or take action on objectives. The most typical C2 channels are 80/443, as well as DNS tunnelling.
 
 #### Actions on Objectives
 
