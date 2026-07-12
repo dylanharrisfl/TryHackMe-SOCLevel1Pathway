@@ -98,4 +98,91 @@ Command and control definse the channel malware creates for an attacker to remot
 
 #### Actions on Objectives
 
+THe final stage where the attacker can take action on their intended attack. For example, perform exfiltration, harvest credentials, corrupt/encrypt data, etc.
+_____
+
+## Unified Kill Chain
+
+_____
+
+#### Threat Modeling
+
+Theat modeling is taking steps to improve the security of a system. This encompasses things like:
+ - Identifying systems that need to be secured, and what they do within the infrastruction. What type of data does it hold, and whats the current security posture?
+ - What current vulnerabilities does this machine have?
+ - Create a plan of action to remediate vulnerabilities
+ - Putting policies in place to prevent future vulnerabilities.
+
+Things like STRIDE, DREAD, and CVSS are frameworks that can be used during threat modeling.
+
+#### The unified kill chain
+
+The unified kill chain is a lot more in depth than other frameworks. It is used to complement things like MITRE ATT&CK and the Lockheed Martin CKC. This frame works dives into 18 different steps/phases for an attacker, and provides a much more modern, realistic approach:
+
+<img width="837" height="533" alt="image" src="https://github.com/user-attachments/assets/6c67cca9-cf43-493a-9ffe-59d77865b51e" />
+
+#### Goal: In (Initial Foothold)
+
+This is one of the 3 series in the UKC. This is the progression of the beginning stages of the attack to get their foot in the door.
+
+The following are the typical/likely steps:
+
+ - Reconnaissance (MITRE Tactic TA0043) - Initial OSINT gathering and planning
+ - Weaponization (MITRA Tactic TA0001) - Setting up infrastructure/tools for an attack
+ - Social Engineering (MITRE Tactic TA0001) - Using social engineering to progress or begin their attack
+ - Exploitation (MITRE Tactic TA0002) - Taking advantages of weakness or vulnerabilities found in target systems
+ - Persistence (MITRE Tactic TA0003) - Deploying a C2 connection to establish a persistent connection to the victim system/network.
+ - Defense Evasion (MITRA Tactic TA0005) - Analyzing the network and security posture to evade defensive measures like IDS/IPS, anti virus, firewalls, etc.
+ - Command and Control (MITRA Tactic TA0011) - Maintaining a remote connection to a victim system in order to manage and progress the attack.
+ - Pivoting (MITRE Tactic TA0008) - Using the breached system to pivot the direction of attack to other parts of the victim infrastructure.
+
+#### Goal: Through (Network Propagation)
+
+This next series is where a foothold is already established, and the attacker begins performing their attack. They must circumvent defensive measures and begin operating through the target infrastrcuture. The stages in this series are:
+
+ - Pivoting (MITRA Tactic TA0008) - Using the accessed system as a tunnel into the victim network to perform further attacks.
+ - Discovery (MITRE Tactic TA0007) - Gathering intelligence from what can be seen at this point to learn more about the network and find vulnerabilities to exploit within the network.
+ - Privilege Escalation (MITRE Tactic TA0004) - Attempting to gain more permissive controls over the system
+ - Execution (MITRE Tactic TA0002) - Deploying malicious code through the pivot system
+ - Credential Access (MITRE Tactic TA0006) - Attempting to steal credentials through methods like credential dumping or keylogging
+ - Lateral Movement (MITRE Tactic TA0008) - With credentials and privileges, moving through the network stealthily to access more senesitive systems.
+
+#### Goal: Out (Action on Objectives)
+
+The last series in the UKC is the last steps completed once main access is gained in order to finalize their actions on objectives.
+
+ - Collection (MITRE Tactic TA0009) - Seek and gather valuable data, compromising confidentiality of the victim data
+ - Exfiltration (MITRE Tactic TA0010) - Sending valuable data outbound to the attackers C2 servers
+ - Impact (MITRE Tactic TA0040) - The attacker compromises and damages the victim systems in order to disrupt operations or destroy evidence
+ - Objectives - The adversary finally accomplishes their goal, whichever way they may be seeking.
+_________
+#### Lab
+
+Next, I have a few lab questions to complete:
+
+<img width="902" height="507" alt="image" src="https://github.com/user-attachments/assets/f81e8d3e-39d2-4c34-aa64-aaeea9d43a0d" />
+
+This is reconaissance, as it is the gathering of information and intelligence in order to build a profile on the victim.
+_______
+<img width="916" height="487" alt="image" src="https://github.com/user-attachments/assets/6a7cde3c-6e8a-4d71-9023-3d3f55710b94" />
+
+This next one is persistence, as that is what is established when setting up a connection to access the machine at a later time.
+________
+<img width="935" height="495" alt="image" src="https://github.com/user-attachments/assets/10e440b7-a036-4561-8b30-5a2390e6dcba" />
+
+While these one could be confused for execution, the answer here is command and control as this question pertains to the actual controlling of the victim system.
+________
+<img width="927" height="500" alt="image" src="https://github.com/user-attachments/assets/d4641c03-f58a-4eb1-8412-a139a6a8c20a" />
+
+This one is pivoting, as it refers to using the compromised system to begin pivoting towards other machines/networks in the infrastructure.
+____
+<img width="925" height="503" alt="image" src="https://github.com/user-attachments/assets/ac429e27-13e4-4d06-ba3c-d1741bf9c6bb" />
+
+The answer here is action on objectives. It is not impact, because they are not damaging or changing any of the information on the existing infrastructure. This simply refers to the attackers reaching their goal of gaining information, and selling it for profit.
+
+________
+
+
 ## Lab in progress...
+
+
