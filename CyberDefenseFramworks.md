@@ -182,6 +182,81 @@ The answer here is action on objectives. It is not impact, because they are not 
 
 ________
 
+## MITRE ATT&CK Framework
+
+_____
+
+The MITRE ATT&CK Framwork is a public knowledge base of commonly used tactics and techniques to perform attacks in the real world. It can be used to develop threat models, help organizations improve security posutre, and better understand and respond to incidents.
+
+This framework categorizes various TTPs
+TTPs are:
+ - Tactics - An attackers objective
+ - Technique - How the attacker goes about acheiving their objective
+ - Procedures - How the attacker goes about implementing the technique
+
+#### The ATT&CK Matrix
+
+The ATTA&CK Matrix is a visual diagram of all of the tactics and techniques within the framework. It can be used to navigate to and better understand specific TTPs that a defense team may need to know about. Each technique and subtechnique has a specific ID associated with it to make references to the Matrix easier to recognize and refer to.
+
+There are a couple relevant lab questions:
+
+What Tactic does the Phishing technique belong to in the ATT&CK Matrix?
+
+Refering to the [ATT&CK Matrix](https://attack.mitre.org/matrices/enterprise/), a quick look showed me that phishing was a technique listed under the initial access tactic. I can select it to look at the 4 sub techniques and read more about each (Attachment, Link, Service, Voice; all referring to different ways to conduct a phishing attack)
+
+Which ID is associated with the Create Account technique?
+
+Again, a quick search in the ATT&CK Matrix showed me the Create Account technique under Persistence. Selecting this technique shows me the ID for this, being T1136.
+
+## How is MITRE ATT&CK used?
+
+The MITRE ATT&CK Framework is used all across the cybersecurity industry. It is a very useful tool for classifying and group TTPs together during an attack. The various groupings can be used for reporting incidents, as well as being able to recognize them in the future in order to repond more efficiently.
+
+For example, Mustang Panda is a China-based commonly used group of TTPs. By using the various ATT&CK mappings for G0129, we can see various information on it. For example, the technique ID used for Recon, T1598, and the fact they use Cobalt Strike as they software to carry out Access Token Manipulation.
+
+The framework is also used for simply referencing known TTPs to better learn and understand how they are performed as well as how they can be defended against.
+
+We can also use the [Groups section](https://attack.mitre.org/groups/) in the framework to look at infromation on various known attack groups and the information gathered on them. We can use this to see what groups may target your organization and what their previously used TTPs are so you can prepare your defenses for them.
+
+The lab has an APT group for us to investigate:
+
+1. Which APT group has targeted the aviation sector and has been active since at least 2013?
+
+By searching for the anything targeting the aviation sector, I could see that APT33 fit this profile.
+
+2. Which ATT&CK sub-technique used by this group is a key area of concern for companies using Office 365?
+
+Once clicking on the APT33 group, I could search for 365 and found teh technique used by this group was "cloud accounts"
+
+3. According to ATT&CK, what tool is linked to the APT group and the sub-technique you identified?
+
+The cloud accounts identification also had some additional information regarding how this group uses it, telling me this group uses Cloud Accounts in tandem with the "Ruler" tool.
+
+4. Which mitigation strategy advises removing inactive or unused accounts to reduce exposure to this sub-technique?
+
+From here, I could dive deeper into the cloud accounts, and see the recommended mitigations for the Cloud Accounts sub-technique. The "User Account Management" mitigation fit the requested profile.
+
+5. What Detection Strategy ID would you implement to detect abused or compromised cloud accounts?
+
+Looking further into the cloud accounts sub-technique, I could see that DET0546 provides me information regarding how to detect compromised cloud accounts, allowing me to not only implement remediations (with recommended mitigations), but detections in case accounts are compromised and my organization needs to know about it.
+
+#### Cyber Analytics REpository (CAR)
+
+CAR is a knowledge base of analytics that provides threat infromation on how to detect adversarial behavior. It will not only provide readable information for security teams on the behaviors, but also premade queries for popular tools like Splunk to easily integrate detections into production software.
+
+#### MITRE D3FEND
+
+MITRE D3FEND (Detection, Denial, and Disruption Framework Empowering Network Defense) is a framwork similar to MITRE ATT&CK that maps out defensive techniques and security controls used in the real world. In this Martix, there are 7 tactics:
+ - Model
+ - Harden
+ - Detect
+ - Isolate
+ - Deceive
+ - Evict
+ - Restore
+
+For example, D3-CRO refers to the Credential Rotation technique, utilize to keep passwords and keys fresh, eliminating the attack tool of attackers reusing old stolen credentials.
+________________________
 
 ## Lab in progress...
 
