@@ -258,6 +258,29 @@ MITRE D3FEND (Detection, Denial, and Disruption Framework Empowering Network Def
 For example, D3-CRO refers to the Credential Rotation technique, utilize to keep passwords and keys fresh, eliminating the attack tool of attackers reusing old stolen credentials.
 ________________________
 
+## Pyramid of Pain lab
+
+__________________
+
+Lab instructions:
+
+After participating in one too many incident response activities, PicoSecure has decided to conduct a threat simulation and detection engineering engagement to bolster its malware detection capabilities. You have been assigned to work with an external penetration tester in an iterative purple-team scenario. The tester will be attempting to execute malware samples on a simulated internal user workstation. At the same time, you will need to configure PicoSecure's security tools to detect and prevent the malware from executing.
+
+Following the Pyramid of Pain's ascending priority of indicators, your objective is to increase the simulated adversaries' cost of operations and chase them away for good. Each level of the pyramid allows you to detect and prevent various indicators of attack.
+
+_____
+
+I started up the attackbox and submitted the first malware for analysis, and it returned a set of information. I poked around my available toolsets and saw that there was an option for hash management.
+
+<img width="1191" height="592" alt="image" src="https://github.com/user-attachments/assets/f5a5162b-6f92-4997-a4ff-d4c3e02c7d88" />
+
+I could see that I could submit the hashes from the analysis to a hash blocklist, successfully addressing this malware:
+
+<img width="1207" height="590" alt="image" src="https://github.com/user-attachments/assets/1584fb82-b541-4e06-88b4-73474aa4a7b2" />
+
+While I would have preferred to make a rule based off the "METASPLOIT was detected", I did not see where to do that right away. I will continue on to the next. 
+
+
 ## Lab in progress...
 
 
