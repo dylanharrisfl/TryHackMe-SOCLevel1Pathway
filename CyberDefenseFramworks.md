@@ -279,8 +279,84 @@ I could see that I could submit the hashes from the analysis to a hash blocklist
 <img width="1207" height="590" alt="image" src="https://github.com/user-attachments/assets/1584fb82-b541-4e06-88b4-73474aa4a7b2" />
 
 While I would have preferred to make a rule based off the "METASPLOIT was detected", I did not see where to do that right away. I will continue on to the next. 
+________________________________
 
+Next, I received sample2.exe, the next file to scan. I scan it for malware analysis and receive this:
 
-## Lab in progress...
+<img width="1172" height="655" alt="image" src="https://github.com/user-attachments/assets/c7536a74-4d74-452a-933c-48c904045632" />
+<img width="1155" height="560" alt="image" src="https://github.com/user-attachments/assets/6d2adf65-bd84-4d40-af79-f6abf84239bf" />
+
+By simply following the pyramid of pain, I now see that more 'painful' blocks are available. In this case, I have IP address information regarding the public servers this malware is reaching out to, at 154.35.10.113, over port 4444. Since a hash is lower on the pyramid, it's recommended to make a block revolving the IP address.
+
+<img width="732" height="364" alt="image" src="https://github.com/user-attachments/assets/97dae69a-49ae-4f9a-9ffc-f152df79ef3c" />
+
+By creating a new deny firewall rule, (at the top of the ACL, not the bottom!!) I now block the sample2.exe malware.
+I choose Egress, as this malware is reaching OUT to this server to either exfiltrate/communicate. I want to kill that communication. By default my firewall will (in most cases, depending on use case and config) block ingress. I want to block it from any source within my network, and set the destination as the malicious server. Finally we set the rule to deny the traffic, as well as be sure to set it at the top of the ACL so it takes precedence over allow rules that might catch it.
+
+_________
+
+I get my next malware sample, sample3.exe. After a scan, I get most of the same data as above, with an addition of:
+
+<img width="1190" height="560" alt="image" src="https://github.com/user-attachments/assets/cef451b7-9a57-468f-b3e2-8f9234b6dfc9" />
+
+Right off the bat, it appears this the DNS server is the most optimal tool to make a block for. That is because the IP address can change through techniques like Fast Flux DNS. By blocking the DNS server in the DNS filter, I can slow down the attack:
+
+<img width="702" height="439" alt="image" src="https://github.com/user-attachments/assets/7b807f40-eddb-49ee-9cfc-6e488d6a264d" />
+
+Adding this deny rule, with a reconizable title, allows me to block the malware, slowing the simulated attack.
+
+___________
+
+Next, I ran sample4.exe. This time I receive some registry read/write information. This is host artifacts, as it is turning off Windows Defender Monitoring. This is stage 4 on the pyramid, making it the most ideal block to make here.
+
+<img width="1132" height="538" alt="image" src="https://github.com/user-attachments/assets/97c24eea-e95d-4ebb-b3d7-e3d67511a28a" />
+
+To make this rule, I go to the Sigma rule creation wizard. I select sysmon as the foundation, and am presented with these options:
+
+<img width="1160" height="567" alt="image" src="https://github.com/user-attachments/assets/463d75cb-2454-4f64-9f1f-14f5c88d85fc" />
+
+I input the registry information provided in the analysis:
+
+<img width="739" height="462" alt="image" src="https://github.com/user-attachments/assets/6fdc4408-ad12-4b38-98dc-1a347caa77bc" />
+
+The rule was a success, and was able to successfully detect the malware. This change is where real pain begins for the attacker. This defense evasion technique is likely a core foundation of their package. Now that it is detectable, it make continuing the attack more difficult, given they now need to adjust their config/approach.
+
+________
+
+For sample5.exe I no longer have any host artifacts. Now, I have what appears to be C2 keep-alive beaconing back to the attackers server, living on 51.102.10.19:
+
+<img width="1101" height="657" alt="image" src="https://github.com/user-attachments/assets/159fc383-b2f5-4da0-a795-318da0e3b3da" />
+
+I also receive the logs for the outbound connections, and see both persistence, and either real traffic or exfiltration:
+
+<img width="999" height="607" alt="image" src="https://github.com/user-attachments/assets/bf5ba687-c7be-49fe-bc4b-735561e06ebe" />
+
+Either way, I can make a rule to kill the beaconing while I investigate the other traffic. Again in the Sigma rule creation, I am creating a sysmon based rule, but this time I make one for network connections:
+
+<img width="813" height="564" alt="image" src="https://github.com/user-attachments/assets/59820760-f775-4263-b6f9-c5f7affb481e" />
+
+Here I select the size and frequency of the keep alive packets being sent. I chose Command and Control due to the clear C2 beaconing occuring. The easy rule to write is a block for the DNS server. But that can very simply be circumvented with a new C2 server hostname. With this rule, the behavior of the C2 becoaning will need to be rewritten before it can be persisted, making it a much more painful rule to write.
+
+________
+
+For the last sample, sample6.exe the malware analysis shows some process information regarding suspicious cmd executions, with the parent process being the executable sample6.exe, along with a file called exfiltr8.log dropped into the temp directory on the device.
+
+<img width="1125" height="613" alt="image" src="https://github.com/user-attachments/assets/71d71fd8-1759-47d9-bd22-0716a8ec7d42" />
+
+The penetration tester also provides the log output of the commands run during malware execution:
+
+<img width="578" height="365" alt="image" src="https://github.com/user-attachments/assets/9716c7e6-6fb6-4431-9180-fa29a2c605a6" />
+
+I can see here that the program is pulling various system information and data from the machine and appending the output to the exfiltr8.log file that was placed in the temp directory. This is likely the file the attacker wants to use to perform exfiltration.
+
+Finally, I can make a file creation rule addressing the actual TTP of the attacker:
+
+<img width="739" height="395" alt="image" src="https://github.com/user-attachments/assets/60f676ad-481a-46af-a428-7228923f28b5" />
+
+This bars the attacker from creating this temp file, requiring them to rewrite how their malware approaches its exfiltration TTP. At the top of the pyramid, this is the most effective way to slow down or all together negate an attack on an organization.
+
+________
+
+## Labs in progress...
 
 
