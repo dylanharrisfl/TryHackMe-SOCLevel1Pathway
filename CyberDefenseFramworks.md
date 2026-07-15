@@ -7,8 +7,11 @@ ____________________________
 ## Key Takeaways:
 
  - Understanding key concepts of the Pyramid of Pain and how it can be used to slow and thwart attacks
+ - Understanding the Cyber Kill Chain and Unified Kill Chain to better identify, comprehend, and prevent intrusions/attacks
+ - Working with the MITRE ATT&CK framework to learn how to manage risk, understand attacks, and prepare defenses based documented and emerging threat intelligence.
+ - Using the Pyramid of Pain to identify the most optimal way to address an attack, and understand how to write those rules in firewalls/EDRs/Detection engines/etc.
+ - Using the MITRE ATT&CK framework to review a relevant APT group's common TTPs and prepare an organization to understand and thwart their attacks.
 
-Lab still in progress...
 _____________________________
 
 ### The Pyramid of Pain
@@ -54,6 +57,105 @@ These are pretty self explainatory.
  - An attacker will buy a domain in order to carry out typo-squatting, so they can catch someone going to gmial.com instead of gmail.com
  - IP addresses are the public facing foundation use by attackers to carry out their attack over the internet. This is where their infrastructure lives.
  - C2 traffic can be identified in network traffic using tools like Wireshark to detect suspicious outbound traffic/communications.
+
+_______________________
+
+## Pyramid of Pain Second Lab
+
+_______________________
+
+Lab instructions:
+
+After participating in one too many incident response activities, PicoSecure has decided to conduct a threat simulation and detection engineering engagement to bolster its malware detection capabilities. You have been assigned to work with an external penetration tester in an iterative purple-team scenario. The tester will be attempting to execute malware samples on a simulated internal user workstation. At the same time, you will need to configure PicoSecure's security tools to detect and prevent the malware from executing.
+
+Following the Pyramid of Pain's ascending priority of indicators, your objective is to increase the simulated adversaries' cost of operations and chase them away for good. Each level of the pyramid allows you to detect and prevent various indicators of attack.
+
+_____
+
+I started up the attackbox and submitted the first malware for analysis, and it returned a set of information. I poked around my available toolsets and saw that there was an option for hash management.
+
+<img width="1191" height="592" alt="image" src="https://github.com/user-attachments/assets/f5a5162b-6f92-4997-a4ff-d4c3e02c7d88" />
+
+I could see that I could submit the hashes from the analysis to a hash blocklist, successfully addressing this malware:
+
+<img width="1207" height="590" alt="image" src="https://github.com/user-attachments/assets/1584fb82-b541-4e06-88b4-73474aa4a7b2" />
+
+While I would have preferred to make a rule based off the "METASPLOIT was detected", I did not see where to do that right away. I will continue on to the next. 
+________________________________
+
+Next, I received sample2.exe, the next file to scan. I scan it for malware analysis and receive this:
+
+<img width="1172" height="655" alt="image" src="https://github.com/user-attachments/assets/c7536a74-4d74-452a-933c-48c904045632" />
+<img width="1155" height="560" alt="image" src="https://github.com/user-attachments/assets/6d2adf65-bd84-4d40-af79-f6abf84239bf" />
+
+By simply following the pyramid of pain, I now see that more 'painful' blocks are available. In this case, I have IP address information regarding the public servers this malware is reaching out to, at 154.35.10.113, over port 4444. Since a hash is lower on the pyramid, it's recommended to make a block revolving the IP address.
+
+<img width="732" height="364" alt="image" src="https://github.com/user-attachments/assets/97dae69a-49ae-4f9a-9ffc-f152df79ef3c" />
+
+By creating a new deny firewall rule, (at the top of the ACL, not the bottom!!) I now block the sample2.exe malware.
+I choose Egress, as this malware is reaching OUT to this server to either exfiltrate/communicate. I want to kill that communication. By default my firewall will (in most cases, depending on use case and config) block ingress. I want to block it from any source within my network, and set the destination as the malicious server. Finally we set the rule to deny the traffic, as well as be sure to set it at the top of the ACL so it takes precedence over allow rules that might catch it.
+
+_________
+
+I get my next malware sample, sample3.exe. After a scan, I get most of the same data as above, with an addition of:
+
+<img width="1190" height="560" alt="image" src="https://github.com/user-attachments/assets/cef451b7-9a57-468f-b3e2-8f9234b6dfc9" />
+
+Right off the bat, it appears this the DNS server is the most optimal tool to make a block for. That is because the IP address can change through techniques like Fast Flux DNS. By blocking the DNS server in the DNS filter, I can slow down the attack:
+
+<img width="702" height="439" alt="image" src="https://github.com/user-attachments/assets/7b807f40-eddb-49ee-9cfc-6e488d6a264d" />
+
+Adding this deny rule, with a reconizable title, allows me to block the malware, slowing the simulated attack.
+
+___________
+
+Next, I ran sample4.exe. This time I receive some registry read/write information. This is host artifacts, as it is turning off Windows Defender Monitoring. This is stage 4 on the pyramid, making it the most ideal block to make here.
+
+<img width="1132" height="538" alt="image" src="https://github.com/user-attachments/assets/97c24eea-e95d-4ebb-b3d7-e3d67511a28a" />
+
+To make this rule, I go to the Sigma rule creation wizard. I select sysmon as the foundation, and am presented with these options:
+
+<img width="1160" height="567" alt="image" src="https://github.com/user-attachments/assets/463d75cb-2454-4f64-9f1f-14f5c88d85fc" />
+
+I input the registry information provided in the analysis:
+
+<img width="739" height="462" alt="image" src="https://github.com/user-attachments/assets/6fdc4408-ad12-4b38-98dc-1a347caa77bc" />
+
+The rule was a success, and was able to successfully detect the malware. This change is where real pain begins for the attacker. This defense evasion technique is likely a core foundation of their package. Now that it is detectable, it make continuing the attack more difficult, given they now need to adjust their config/approach.
+
+________
+
+For sample5.exe I no longer have any host artifacts. Now, I have what appears to be C2 keep-alive beaconing back to the attackers server, living on 51.102.10.19:
+
+<img width="1101" height="657" alt="image" src="https://github.com/user-attachments/assets/159fc383-b2f5-4da0-a795-318da0e3b3da" />
+
+I also receive the logs for the outbound connections, and see both persistence, and either real traffic or exfiltration:
+
+<img width="999" height="607" alt="image" src="https://github.com/user-attachments/assets/bf5ba687-c7be-49fe-bc4b-735561e06ebe" />
+
+Either way, I can make a rule to kill the beaconing while I investigate the other traffic. Again in the Sigma rule creation, I am creating a sysmon based rule, but this time I make one for network connections:
+
+<img width="813" height="564" alt="image" src="https://github.com/user-attachments/assets/59820760-f775-4263-b6f9-c5f7affb481e" />
+
+Here I select the size and frequency of the keep alive packets being sent. I chose Command and Control due to the clear C2 beaconing occuring. The easy rule to write is a block for the DNS server. But that can very simply be circumvented with a new C2 server hostname. With this rule, the behavior of the C2 becoaning will need to be rewritten before it can be persisted, making it a much more painful rule to write.
+
+________
+
+For the last sample, sample6.exe the malware analysis shows some process information regarding suspicious cmd executions, with the parent process being the executable sample6.exe, along with a file called exfiltr8.log dropped into the temp directory on the device.
+
+<img width="1125" height="613" alt="image" src="https://github.com/user-attachments/assets/71d71fd8-1759-47d9-bd22-0716a8ec7d42" />
+
+The penetration tester also provides the log output of the commands run during malware execution:
+
+<img width="578" height="365" alt="image" src="https://github.com/user-attachments/assets/9716c7e6-6fb6-4431-9180-fa29a2c605a6" />
+
+I can see here that the program is pulling various system information and data from the machine and appending the output to the exfiltr8.log file that was placed in the temp directory. This is likely the file the attacker wants to use to perform exfiltration.
+
+Finally, I can make a file creation rule addressing the actual TTP of the attacker:
+
+<img width="739" height="395" alt="image" src="https://github.com/user-attachments/assets/60f676ad-481a-46af-a428-7228923f28b5" />
+
+This bars the attacker from creating this temp file, requiring them to rewrite how their malware approaches its exfiltration TTP. At the top of the pyramid, this is the most effective way to slow down or all together negate an attack on an organization.
 ________________________________
 
 ## The Lockheed Martin Cyber Kill Chain
@@ -115,7 +217,7 @@ Theat modeling is taking steps to improve the security of a system. This encompa
 
 Things like STRIDE, DREAD, and CVSS are frameworks that can be used during threat modeling.
 
-#### The unified kill chain
+#### The Unified Kill Chain
 
 The unified kill chain is a lot more in depth than other frameworks. It is used to complement things like MITRE ATT&CK and the Lockheed Martin CKC. This frame works dives into 18 different steps/phases for an attacker, and provides a much more modern, realistic approach:
 
@@ -240,7 +342,7 @@ From here, I could dive deeper into the cloud accounts, and see the recommended 
 
 Looking further into the cloud accounts sub-technique, I could see that DET0546 provides me information regarding how to detect compromised cloud accounts, allowing me to not only implement remediations (with recommended mitigations), but detections in case accounts are compromised and my organization needs to know about it.
 
-#### Cyber Analytics REpository (CAR)
+#### Cyber Analytics Repository (CAR)
 
 CAR is a knowledge base of analytics that provides threat infromation on how to detect adversarial behavior. It will not only provide readable information for security teams on the behaviors, but also premade queries for popular tools like Splunk to easily integrate detections into production software.
 
@@ -256,107 +358,55 @@ MITRE D3FEND (Detection, Denial, and Disruption Framework Empowering Network Def
  - Restore
 
 For example, D3-CRO refers to the Credential Rotation technique, utilize to keep passwords and keys fresh, eliminating the attack tool of attackers reusing old stolen credentials.
+
+_____________
+
+#### MITRE ATT&CK Lab
+
 ________________________
 
-## Pyramid of Pain lab
+Sunny is a SOC analyst at E-corp, which manufactures rare earth metals for government and non-government clients. She receives a classified intelligence report that informs her that an APT group (APT28) might be trying to attack organizations similar to E-corp. To act on this intelligence, she must use the MITRE ATT&CK Navigator to identify the TTPs used by the APT group, to ensure it has not already intruded into the network, and to stop it if it has.
 
-__________________
+My goal is to visit [this link](https://static-labs.tryhackme.cloud/sites/eviction/) to check out the MITRE ATT&CK Navigator layer for the APT group and answer the questions below.
 
-Lab instructions:
+1. What is a technique used by the APT to both perform recon and gain initial access?
 
-After participating in one too many incident response activities, PicoSecure has decided to conduct a threat simulation and detection engineering engagement to bolster its malware detection capabilities. You have been assigned to work with an external penetration tester in an iterative purple-team scenario. The tester will be attempting to execute malware samples on a simulated internal user workstation. At the same time, you will need to configure PicoSecure's security tools to detect and prevent the malware from executing.
+By navigating to the MITRE ATT&CK Navigator for APT28, and look at the recon and initial access column, I can see there are references to "Spearphishing Link" in both. Each technique is unique, and refer to how a spearphishing link can not only provide initial access, but also recon information in the beginning stages of an attack/attack planning.
 
-Following the Pyramid of Pain's ascending priority of indicators, your objective is to increase the simulated adversaries' cost of operations and chase them away for good. Each level of the pyramid allows you to detect and prevent various indicators of attack.
+2. Sunny identified that the APT might have moved forward from the recon phase. Which accounts might the APT compromise while developing resources?
 
-_____
+The answer is email accounts. When navigating to resource development after recon, we can see the Compromise Accounts: Email Account is the technique highlighted for this APT group. 
 
-I started up the attackbox and submitted the first malware for analysis, and it returned a set of information. I poked around my available toolsets and saw that there was an option for hash management.
+3. E-corp has found that the APT might have gained initial access using social engineering to make the user execute code for the threat actor. Sunny wants to identify if the APT was also successful in execution. What two techniques of user execution should Sunny look out for? (Answer format: <technique 1> and <technique 2>)
 
-<img width="1191" height="592" alt="image" src="https://github.com/user-attachments/assets/f5a5162b-6f92-4997-a4ff-d4c3e02c7d88" />
+There are a few execution techniques listed, but for specifically user execution, the techniques, Malicious File and Malicious link are specified.
 
-I could see that I could submit the hashes from the analysis to a hash blocklist, successfully addressing this malware:
+4. If the above technique was successful, which scripting interpreters should Sunny search for to identify successful execution? (Answer format: <technique 1> and <technique 2>)
 
-<img width="1207" height="590" alt="image" src="https://github.com/user-attachments/assets/1584fb82-b541-4e06-88b4-73474aa4a7b2" />
+Again, under the execution tactic, there is a technique for command and scripting interpreter, with powershell and windows command shell highlighted specifically for this APT group.
 
-While I would have preferred to make a rule based off the "METASPLOIT was detected", I did not see where to do that right away. I will continue on to the next. 
-________________________________
+5. While looking at the scripting interpreters identified in Q4, Sunny found some obfuscated scripts that changed the registry. Assuming these changes are for maintaining persistence, which registry keys should Sunny observe to track these changes?
 
-Next, I received sample2.exe, the next file to scan. I scan it for malware analysis and receive this:
+Specified under the persistence tactic, in the boot or logon autostart execution technique, there is a highlighted reference to the registry run keys/startup folder, which is a common technique used to initiate C2 malware on system startup.
 
-<img width="1172" height="655" alt="image" src="https://github.com/user-attachments/assets/c7536a74-4d74-452a-933c-48c904045632" />
-<img width="1155" height="560" alt="image" src="https://github.com/user-attachments/assets/6d2adf65-bd84-4d40-af79-f6abf84239bf" />
+6. Sunny identified that the APT executes system binaries to evade defences. Which system binary's execution should Sunny scrutinize for proxy execution?
 
-By simply following the pyramid of pain, I now see that more 'painful' blocks are available. In this case, I have IP address information regarding the public servers this malware is reaching out to, at 154.35.10.113, over port 4444. Since a hash is lower on the pyramid, it's recommended to make a block revolving the IP address.
+I looked through the various defense evasion techniques listed under the tactic. I cam across the rootkit tactic rundll, which abuses rundll32.exe to proxy the execution of malicious code. This means threat actors are running their malicious processes through legitimate Windows executable files that are typically excluded in order to limit false positive alerts (kind of ironic!).
 
-<img width="732" height="364" alt="image" src="https://github.com/user-attachments/assets/97dae69a-49ae-4f9a-9ffc-f152df79ef3c" />
+7. Sunny identified tcpdump on one of the compromised hosts. Assuming this was placed there by the threat actor, which technique might the APT be using here for discovery?
 
-By creating a new deny firewall rule, (at the top of the ACL, not the bottom!!) I now block the sample2.exe malware.
-I choose Egress, as this malware is reaching OUT to this server to either exfiltrate/communicate. I want to kill that communication. By default my firewall will (in most cases, depending on use case and config) block ingress. I want to block it from any source within my network, and set the destination as the malicious server. Finally we set the rule to deny the traffic, as well as be sure to set it at the top of the ACL so it takes precedence over allow rules that might catch it.
+Looking through the refernced credential access techniques, I can see that network sniffing is highlighted. This one clearly fits the profile, as through a tcpdump and attacker can pull all kinds of things like credentials shared over insecure protocol communication (HTTP, FTP) as well as information on vulnerable services like LLMNR, mDNS, NBNS, etc., that can be taken advantage of over the network.
 
-_________
+8. It looks like the APT achieved lateral movement by exploiting remote services. Which remote services should Sunny observe to identify APT activity traces?
 
-I get my next malware sample, sample3.exe. After a scan, I get most of the same data as above, with an addition of:
+Looking at the remote services technique under the lateral movement, this APT group is known for exploiting SMB/Windows Admin Shares during their attacks. This makes it the ideal place to look when hunting down artifacts potentially left by this attacker group.
 
-<img width="1190" height="560" alt="image" src="https://github.com/user-attachments/assets/cef451b7-9a57-468f-b3e2-8f9234b6dfc9" />
+9. It looked like the primary goal of the APT was to steal intellectual property from E-corp's information repositories. Which information repository can be the likely target of the APT?
 
-Right off the bat, it appears this the DNS server is the most optimal tool to make a block for. That is because the IP address can change through techniques like Fast Flux DNS. By blocking the DNS server in the DNS filter, I can slow down the attack:
+Under the collection tactic, the only data from information repositories mentioned is sharepoint, a Microsoft proprietary cloud storage toolset, used by many organizations in many different ways.
 
-<img width="702" height="439" alt="image" src="https://github.com/user-attachments/assets/7b807f40-eddb-49ee-9cfc-6e488d6a264d" />
+10. Although the APT had collected the data, it could not connect to the C2 for data exfiltration. To thwart any attempts to do that, what types of proxy might the APT use? (Answer format: <technique 1> and <technique 2>)
 
-Adding this deny rule, with a reconizable title, allows me to block the malware, slowing the simulated attack.
-
-___________
-
-Next, I ran sample4.exe. This time I receive some registry read/write information. This is host artifacts, as it is turning off Windows Defender Monitoring. This is stage 4 on the pyramid, making it the most ideal block to make here.
-
-<img width="1132" height="538" alt="image" src="https://github.com/user-attachments/assets/97c24eea-e95d-4ebb-b3d7-e3d67511a28a" />
-
-To make this rule, I go to the Sigma rule creation wizard. I select sysmon as the foundation, and am presented with these options:
-
-<img width="1160" height="567" alt="image" src="https://github.com/user-attachments/assets/463d75cb-2454-4f64-9f1f-14f5c88d85fc" />
-
-I input the registry information provided in the analysis:
-
-<img width="739" height="462" alt="image" src="https://github.com/user-attachments/assets/6fdc4408-ad12-4b38-98dc-1a347caa77bc" />
-
-The rule was a success, and was able to successfully detect the malware. This change is where real pain begins for the attacker. This defense evasion technique is likely a core foundation of their package. Now that it is detectable, it make continuing the attack more difficult, given they now need to adjust their config/approach.
-
-________
-
-For sample5.exe I no longer have any host artifacts. Now, I have what appears to be C2 keep-alive beaconing back to the attackers server, living on 51.102.10.19:
-
-<img width="1101" height="657" alt="image" src="https://github.com/user-attachments/assets/159fc383-b2f5-4da0-a795-318da0e3b3da" />
-
-I also receive the logs for the outbound connections, and see both persistence, and either real traffic or exfiltration:
-
-<img width="999" height="607" alt="image" src="https://github.com/user-attachments/assets/bf5ba687-c7be-49fe-bc4b-735561e06ebe" />
-
-Either way, I can make a rule to kill the beaconing while I investigate the other traffic. Again in the Sigma rule creation, I am creating a sysmon based rule, but this time I make one for network connections:
-
-<img width="813" height="564" alt="image" src="https://github.com/user-attachments/assets/59820760-f775-4263-b6f9-c5f7affb481e" />
-
-Here I select the size and frequency of the keep alive packets being sent. I chose Command and Control due to the clear C2 beaconing occuring. The easy rule to write is a block for the DNS server. But that can very simply be circumvented with a new C2 server hostname. With this rule, the behavior of the C2 becoaning will need to be rewritten before it can be persisted, making it a much more painful rule to write.
-
-________
-
-For the last sample, sample6.exe the malware analysis shows some process information regarding suspicious cmd executions, with the parent process being the executable sample6.exe, along with a file called exfiltr8.log dropped into the temp directory on the device.
-
-<img width="1125" height="613" alt="image" src="https://github.com/user-attachments/assets/71d71fd8-1759-47d9-bd22-0716a8ec7d42" />
-
-The penetration tester also provides the log output of the commands run during malware execution:
-
-<img width="578" height="365" alt="image" src="https://github.com/user-attachments/assets/9716c7e6-6fb6-4431-9180-fa29a2c605a6" />
-
-I can see here that the program is pulling various system information and data from the machine and appending the output to the exfiltr8.log file that was placed in the temp directory. This is likely the file the attacker wants to use to perform exfiltration.
-
-Finally, I can make a file creation rule addressing the actual TTP of the attacker:
-
-<img width="739" height="395" alt="image" src="https://github.com/user-attachments/assets/60f676ad-481a-46af-a428-7228923f28b5" />
-
-This bars the attacker from creating this temp file, requiring them to rewrite how their malware approaches its exfiltration TTP. At the top of the pyramid, this is the most effective way to slow down or all together negate an attack on an organization.
-
-________
-
-## Labs in progress...
-
+They could (and are known for) using external and multi-hop proxies to act as middle men for network communications to a C2 server in order to keep C2 interface consistently resilient through attempts to thwart.
+_________________________
 
